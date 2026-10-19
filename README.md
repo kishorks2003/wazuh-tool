@@ -3,7 +3,7 @@
 Project result
 
 - Agents: 1 app host successfully onboarded and reporting.
-- Alerts: Several alerts surfaced; I validated at least one true positive and tuned rules to reduce noise.
+- Alerts: Several alerts surfaced; I validated true positive and tuned rules to reduce noise.
 - FIM: Detected an unexpected config change which was reverted and documented.
 - Vulnerability detection: Identified outdated packages with actionable CVEs; prioritized patching.
 - Network correlation: Wireshark capture validated suspicious connection attempts flagged by Wazuh.
