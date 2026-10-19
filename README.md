@@ -1,52 +1,51 @@
-# wazuh-tool
-Wazuh tool 
-Definition / core idea
+# Wazuh-based Host Monitoring and Incident Detection
+Project result
 
-Wazuh = open-source security platform (fork/evolution of OSSEC) that collects and analyzes telemetry from endpoints (agents) and cloud sources to detect threats, enforce policies, and support incident response.
-Core components:
-Wazuh Manager (analysis engine, rules, alerting)
-Wazuh Agents (installed on endpoints to collect logs, monitor files, run local checks)
-Indexer & storage (Elasticsearch or OpenSearch) for storing and searching events
-Dashboards (Kibana or OpenSearch Dashboards) for visualization and investigation
-Wazuh API for integrations and automation
-Optional components: Wazuh cluster mode, threat intelligence feeds, vulnerability-detector, active response scripts
-Key features
+Agents: 1 app host successfully onboarded and reporting.
+Alerts: Several alerts surfaced; I validated at least one true positive and tuned rules to reduce noise.
+FIM: Detected an unexpected config change which was reverted and documented.
+Vulnerability detection: Identified outdated packages with actionable CVEs; prioritized patching.
+Network correlation: Wireshark capture validated suspicious connection attempts flagged by Wazuh.
 
-Log collection and centralized analysis (syslog, app logs, Windows event logs)
-Host-based intrusion detection (HIDS) and real-time alerting
-File integrity monitoring (FIM)
-Vulnerability detection (scans based on installed packages)
-Configuration assessment / compliance checks (CIS, PCI, HIPAA rules)
-Rootkit, malware and anomaly detection rules
-Active response (automated actions like blocking IPs)
-Integration with SIEMs, ticketing, chatops, cloud providers
-Pros
+What I did??
 
-Open-source and free to use (enterprise support available from Wazuh)
-Broad host coverage: Windows, Linux, macOS, containers
-Rich, regularly-updated ruleset and detection modules
-Extensible: custom rules, decoders, scripts, integrations
-Good for compliance reporting and FIM use-cases
-Works with Elastic Stack or OpenSearch — powerful search/visualization
-Lightweight agents with encrypted communication
-Cons / tradeoffs
+Set up the Wazuh environment
 
-Operational complexity: needs an indexer (Elasticsearch/OpenSearch) and dashboard layer — these add operational overhead and resource costs
-At scale, requires careful sizing, clustering, and maintenance of indices and nodes
-Initial configuration and rule tuning can take time to reduce false positives
-UI/UX is functional but not as polished as some commercial SIEM products
-Out-of-the-box UEBA/advanced analytics are limited compared with commercial analytics platforms (you can build on top of Elastic/OpenSearch)
-Agentless monitoring is limited compared to agent-based visibility
-Common use cases
+Deployed a Wazuh Manager (single-node for POC) and connected it to an indexer/dashboard (Elasticsearch or OpenSearch + Kibana/OpenSearch Dashboards).
+Enabled TLS for secure agent-manager communications.
+Created and installed a Wazuh agent on the target application host
 
-Centralized host monitoring and intrusion detection across servers and endpoints
-Log aggregation + threat detection (replace or augment a SIEM)
-File integrity monitoring for critical files and applications
-Vulnerability detection for installed packages and software
-Compliance assessment and reporting (automated checks vs benchmarks)
-Incident response and forensics (searchable historical telemetry)
-Cloud and container security (collect cloud logs, Kubernetes/node monitoring)
-Automated response (block suspicious IPs, isolate hosts)
+Registered a new agent in the manager and installed the agent package on the application server.
+Verified agent status (connected, last keepalive) in the Wazuh dashboard.
+Configured log collection and modules
 
+Enabled collection of system logs, application logs, and Windows Event Logs (if applicable).
+Activated modules used: file integrity monitoring (FIM), rootcheck, vulnerability-detector, and syscollector.
+Tuned detection rules and custom decoders
 
+Imported or created custom rules to reduce false positives for the application.
+Adjusted rule levels and added exceptions where known benign activity occurred.
+Verified alerts and investigated notable detections
 
+Reviewed recent alerts in the Wazuh/Kibana dashboard (alert list, severity, rule id, agent, timestamp).
+Per-alert: inspected raw event details (full log message, fields like src_ip/dst_ip/user/command) for triage.
+Performed file integrity monitoring (FIM) checks
+
+Configured paths to monitor (app config files, webroot, /etc, critical binaries).
+Investigated FIM alerts for unauthorized changes and restored or quarantined suspicious files.
+Ran vulnerability detection
+
+Enabled vulnerability-detector to scan installed packages and report CVEs and missing patches.
+Prioritized critical/high CVEs and documented remediation steps.
+Used active-response and automated actions (if configured)
+
+Created active-response scripts to block suspicious IPs (e.g., via firewall) or quarantine hosts.
+Tested active-response behavior from a simulated alert.
+Captured network traffic and correlated with alerts (Wireshark)
+
+Ran Wireshark captures on the monitored host or network segment to validate suspicious traffic flagged by Wazuh.
+Correlated packet-level data (flows, protocols, suspicious payloads) with Wazuh alerts to confirm incidents.
+Exported and documented evidence
+
+Exported alert lists, raw event JSON, and PCAPs for forensic documentation.
+Saved screenshots of dashboards, alert details, and Wireshark captures for the project report.
