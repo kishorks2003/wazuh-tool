@@ -11,7 +11,7 @@ Project result
 What I did
 
 1. Set up the Wazuh environment
-   - Deployed a Wazuh Manager (single-node for POC) and connected it to an indexer/dashboard (Elasticsearch or OpenSearch + Kibana/OpenSearch Dashboards).
+   - Deployed a Wazuh Manager (single-node for POC) and connected it.
    - Enabled TLS for secure agent-manager communications.
 
 2. Created and installed a Wazuh agent on the target application host
